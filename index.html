@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TransIRC Network Status</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    header {
+      background: #1f1f1f;
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 2px solid #333;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      color: #00bcd4;
+    }
+
+    header p {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      color: #aaa;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .section-title {
+      color: #00bcd4;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .irc-status {
+      background: #1e1e1e;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-left: 5px solid #00e676;
+      border-radius: 8px;
+    }
+
+    .irc-status h2 {
+      margin-top: 0;
+      color: #ffffff;
+    }
+
+    .irc-status pre {
+      font-family: monospace;
+      color: #bbb;
+      white-space: pre-wrap;
+      margin: 0.5rem 0 0;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .status-card {
+      background: #1e1e1e;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      border-left: 5px solid #00e676;
+      transition: border-color 0.3s ease;
+    }
+
+    .status-card.down {
+      border-color: #ff1744;
+    }
+
+    .status-card h3 {
+      margin-top: 0;
+      color: #ffffff;
+    }
+
+    .status-card p, .status-card a, .status-card code {
+      color: #bbb;
+      margin: 0.2rem 0;
+      font-size: 0.95rem;
+    }
+
+    .channels {
+      margin-top: 3rem;
+    }
+
+    .channels ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .channels li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Outdated warning style */
+    .outdated {
+      color: #b20000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TransIRC Network Status</h1>
+    <p>Real-time overview of services & community</p>
+  </header>
+
+  <div class="container">
+
+    <section class="irc-status">
+      <h2 class="section-title">IRC Server Status</h2>
+      <p><strong>Status:</strong> <span id="ircStatusText">Loading...</span></p>
+      <pre id="ircDetails">
+Loading IRC details...
+      </pre>
+    </section>
+
+    <section>
+      <h2 class="section-title">Service Status</h2>
+      <div class="status-grid" id="servicesStatusGrid">
+        <!-- Status cards will be inserted here -->
+      </div>
+    </section>
+
+    <section class="channels">
+      <h2 class="section-title">IRC Channels</h2>
+      <ul id="channelTopics">
+        <li>Loading channels...</li>
+      </ul>
+    </section>
+
+  </div>
+
+  <footer>
+    &copy; 2025 TransIRC. Status is updated periodically and based on internal checks.
+  </footer>
+
+  <script>
+    // Utility to create a status card element
+    function createStatusCard(name, status, url, port) {
+      const card = document.createElement('div');
+      card.classList.add('status-card');
+      if (status !== 'online') card.classList.add('down');
+
+      const title = document.createElement('h3');
+      title.textContent = name;
+      card.appendChild(title);
+
+      const statusP = document.createElement('p');
+      statusP.innerHTML = 'Status: <strong>' + status.charAt(0).toUpperCase() + status.slice(1) + '</strong>';
+      card.appendChild(statusP);
+
+      if (url) {
+        const linkP = document.createElement('p');
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = url.replace(/^https?:\/\//, '');
+        linkP.appendChild(link);
+        card.appendChild(linkP);
+      }
+
+      if (port) {
+        const portP = document.createElement('p');
+        portP.innerHTML = 'Port: <code>' + port + '</code>';
+        card.appendChild(portP);
+      }
+
+      return card;
+    }
+
+    // Load status.json and update service cards
+    async function loadServicesStatus() {
+      try {
+        const response = await fetch('status.json?nocache=' + Date.now());
+        if (!response.ok) throw new Error('Failed to fetch status.json');
+        const data = await response.json();
+
+        const container = document.getElementById('servicesStatusGrid');
+        container.innerHTML = ''; // Clear loading message or old data
+
+        // Build cards for each service except meta
+        // Use friendly names & add URLs/ports where relevant
+        const serviceMap = {
+          wiki: { name: 'Wiki', url: 'https://wiki.transirc.chat' },
+          social: { name: 'Social Network', url: 'https://social.transirc.chat' },
+          thelounge: { name: 'Web IRC (The Lounge)', url: 'https://web.transirc.chat' },
+          irc: { name: 'IRC Server', port: '6697' },
+          ssh: { name: 'SSH to IRC Tunnel', port: '2222' },
+          onion: { name: 'Onion Backdoor', port: '6667' }
+        };
+
+        for (const [key, val] of Object.entries(serviceMap)) {
+          const statusObj = data[key];
+          const status = statusObj?.status ?? 'down';
+          const url = val.url || null;
+          const port = val.port || null;
+
+          const card = createStatusCard(val.name, status, url, port);
+          container.appendChild(card);
+        }
+      } catch (err) {
+        console.error('Error loading service status:', err);
+        const container = document.getElementById('servicesStatusGrid');
+        container.innerHTML = '<p style="color:#b20000;">Error loading service status.</p>';
+      }
+    }
+
+    // Load channel_topics.json and update channels list
+    async function loadChannels() {
+      const container = document.getElementById('channelTopics');
+      try {
+        const response = await fetch('channel_topics.json?nocache=' + Date.now());
+        if (!response.ok) throw new Error('Failed to load channel_topics.json');
+        const data = await response.json();
+
+        container.innerHTML = ''; // Clear loading message
+        for (const [channel, topic] of Object.entries(data)) {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${channel}</strong> — ${topic}`;
+          container.appendChild(li);
+        }
+      } catch (error) {
+        console.error('Error loading channel topics:', error);
+        container.innerHTML = '<li style="color:#b20000;">Error loading channel topics.</li>';
+      }
+    }
+
+    // Load irc_status.json and update IRC server status section
+    async function loadIrcStatus() {
+      const statusTextEl = document.getElementById('ircStatusText');
+      const detailsEl = document.getElementById('ircDetails');
+      try {
+        const response = await fetch('irc_status.json?nocache=' + Date.now());
+        if (!response.ok) throw new Error('Failed to fetch irc_status.json');
+        const data = await response.json();
+
+        // Determine if data is outdated (>10 minutes)
+        let isOutdated = false;
+        if (data.server_time) {
+          const serverTime = new Date(data.server_time * 1000);
+          const nowUTC = new Date();
+          const diffSeconds = (nowUTC - serverTime) / 1000;
+          if (diffSeconds > 600) {
+            isOutdated = true;
+          }
+        }
+
+        // If outdated, status is down, else online
+        if (isOutdated) {
+          statusTextEl.textContent = 'Down';
+          statusTextEl.style.color = '#ff1744';
+        } else {
+          statusTextEl.textContent = 'Online';
+          statusTextEl.style.color = '#00e676';
+        }
+
+        // Prepare detailed info text
+        let detailsText =
+`Users: ${data.users ?? 'N/A'}
+Channels: ${data.channels ?? 'N/A'}
+Servers: ${data.servers ?? 'N/A'}
+Operators: ${data.operators ?? 'N/A'}
+Running since: ${data.uptime ?? 'N/A'}
+Ergo version: ${data.version ?? 'N/A'}`;
+
+        if (data.server_time) {
+          const serverTime = new Date(data.server_time * 1000);
+          let lastUpdatedText = `Last updated: ${serverTime.toUTCString()}`;
+          if (isOutdated) {
+            lastUpdatedText += " ⚠️ (Outdated)";
+            detailsEl.classList.add('outdated');
+          } else {
+            detailsEl.classList.remove('outdated');
+          }
+          detailsText += `\n\n${lastUpdatedText}`;
+        }
+
+        detailsEl.textContent = detailsText;
+
+      } catch (error) {
+        console.error('Failed to load IRC status:', error);
+        statusTextEl.textContent = 'Unknown';
+        statusTextEl.style.color = '#b20000';
+        detailsEl.textContent = 'Could not load IRC server details.';
+      }
+    }
+
+    // Load all data on DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      loadServicesStatus();
+      loadChannels();
+      loadIrcStatus();
+    });
+  </script>
+</body>
+</html>
