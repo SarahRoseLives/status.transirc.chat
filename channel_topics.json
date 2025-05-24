@@ -1,10 +1,10 @@
 {
+  "#server-planning": "A temporary channel for planning the future of this server and the services that revolve around it. Help build this with me!",
+  "#lobby": "Welcome to our 'private' members only lobby, a safe place to mingle away from the front-facing #welcome channel.",
   "#triggering": "Sensitive or triggering topics like politics, current events, and tough conversations can be discussed here.",
-  "#Welcome": "Welcome to TransIRC! A safe space for trans and questioning individuals to ask questions, find support, and simply be themselves. Don't forget to register with NickServ to unlock all channels! NEWLY REGISTERED USERS MUST WAIT 10 MINUTES TO JOIN RESTRICTED CHANNELS.",
   "#work-day": "How\u2019s your workday been? Whether it\u2019s a great day or a tough one, we\u2019re here to listen and support each other.",
   "#sex-work": "A space to talk about sex work, safety, boundaries, and the realities of the profession. Remember: In-person sex work discussions are not allowed here for safety and legal reasons.",
-  "#lobby": "Welcome to our 'private' members only lobby, a safe place to mingle away from the front-facing #welcome channel.",
+  "#Welcome": "Welcome to TransIRC! A safe space for trans and questioning individuals to ask questions, find support, and simply be themselves. Don't forget to register with NickServ to unlock all channels! NEWLY REGISTERED USERS MUST WAIT 10 MINUTES TO JOIN RESTRICTED CHANNELS.",
   "#hrt": "All things HRT\u2014what it is, how it works, and your experiences with it. Feel free to ask questions and share advice.",
-  "#server-planning": "A temporary channel for planning the future of this server and the services that revolve around it. Help build this with me!",
   "#null": "Scream into the void, express your feelings, and let it all out. This is your space to vent freely."
 }
