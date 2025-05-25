@@ -1,9 +1,9 @@
 {
-  "wiki": { "status": "online", "checked_at": "2025-05-25T06:55:02Z" },
-  "social": { "status": "online", "checked_at": "2025-05-25T06:55:02Z" },
-  "thelounge": { "status": "online", "checked_at": "2025-05-25T06:55:02Z" },
-  "irc": { "status": "online", "checked_at": "2025-05-25T06:55:02Z" },
-  "ssh": { "status": "online", "checked_at": "2025-05-25T06:55:02Z" },
-  "onion": { "status": "online", "checked_at": "2025-05-25T06:55:02Z" },
-  "meta": { "generated_at": "2025-05-25T06:55:02Z" }
+  "wiki": { "status": "online", "checked_at": "2025-05-25T07:00:01Z" },
+  "social": { "status": "online", "checked_at": "2025-05-25T07:00:01Z" },
+  "thelounge": { "status": "online", "checked_at": "2025-05-25T07:00:01Z" },
+  "irc": { "status": "online", "checked_at": "2025-05-25T07:00:01Z" },
+  "ssh": { "status": "online", "checked_at": "2025-05-25T07:00:01Z" },
+  "onion": { "status": "down", "checked_at": "2025-05-25T07:00:01Z" },
+  "meta": { "generated_at": "2025-05-25T07:00:01Z" }
 }
