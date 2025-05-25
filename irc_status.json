@@ -1,9 +1,9 @@
 {
-  "users": 3,
+  "users": 2,
   "channels": 10,
   "servers": 1,
   "operators": null,
   "uptime": "This server has been running since Fri, 23 May 2025 09:07:08 UTC.",
   "version": "This is Ergo version 2.16.0.",
-  "server_time": 1748151803
+  "server_time": 1748152106
 }
